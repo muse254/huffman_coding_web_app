@@ -1,3 +1,4 @@
+use crate::models::{HuffmanCode, HuffmanCodes};
 use std::{collections::HashMap, usize};
 
 enum HuffmanTree {
@@ -50,7 +51,7 @@ impl Sort for TreeHeap {
 }
 
 fn heapify(h: &mut TreeHeap) {
-    let n = h.len();
+    let n = h.len() as i32;
 
     let mut i = (n / 2) - 1;
     while i >= 0 {
@@ -60,24 +61,25 @@ fn heapify(h: &mut TreeHeap) {
 }
 
 fn down(tree: &mut TreeHeap, i0: u32, n: u32) {
-    let mut i = i0;
+    let mut i = i0 as i32;
     loop {
         let j1 = 2 * i + 1;
-        if j1 >= n || j1 < 0 { // j1 < 0 after int overflow
+        if j1 >= n as i32 || j1 < 0 {
+            // j1 < 0 after int overflow
             break;
         }
 
         let mut j = j1; // left child
         let j2 = j1 + 1; // = 2*i + 2
-        if j2 < n && tree.less(&j2, &j1) {
+        if j2 < n as i32 && tree.less(&(j2 as u32), &(j1 as u32)) {
             j = j2; // right child
         }
 
-        if !tree.less(&j, &i) {
+        if !tree.less(&(j as u32), &(i as u32)) {
             break;
         }
 
-        tree.swap_elem(&i, &j);
+        tree.swap_elem(&(i as u32), &(j as u32));
         i = j;
     }
 }
@@ -150,4 +152,79 @@ fn build_node<'a>(trees: &mut TreeHeap) {
     };
 
     push(trees_ref_2, HuffmanTree::Node(node));
+}
+
+fn build_huffman_codes(
+    huffman_tree: &HuffmanTree,
+    code: Vec<u8>,
+    huffman_codes: &mut HuffmanCodes,
+) {
+    match huffman_tree {
+        // If this is a leaf node, then it contains one of the input
+        // characters
+        HuffmanTree::Leaf(leaf) => {
+            let code_ref = &mut (*code);
+            let huffman_code = HuffmanCode {
+                character: leaf.value,
+                frequency: leaf.freq,
+                huffman_code: code,
+            };
+
+            huffman_codes.huffman_codes.push(Some(huffman_code)); //Some(huffman_code));
+        }
+
+        HuffmanTree::Node(node) => {
+            //let code_ref =  code;
+
+            let left_node = node.left.as_ref();
+
+            {
+                let mut_code = &mut (*code);
+                let huffman_codes_ref = &mut (*huffman_codes);
+
+				
+                // Assign 0 to left edge and recur
+				mut_code.push('0' as u8);
+                build_huffman_codes(left_node, code_ref, huffman_codes_ref);
+
+                let index = huffman_codes_ref.huffman_codes.len() - 1;
+                huffman_codes_ref.huffman_codes.remove(index);
+            }
+            let code_ref = &mut (*code);
+            let huffman_codes_ref = &mut (*huffman_codes);
+
+            // let other_code_ref = code;
+            // Assign 1 to right edge and recur
+            code_ref.push('1' as u8);
+            let right_node = node.right.as_ref();
+            build_huffman_codes(right_node, code_ref, huffman_codes_ref);
+            // remove the '1' that was added
+            huffman_codes
+                .huffman_codes
+                .remove(huffman_codes.huffman_codes.len() - 1);
+        }
+    }
+}
+
+pub fn generate_codes<'a>(text: &'a str) -> HuffmanCodes {
+    // build hash-map from string
+    let mut sym_freq: HashMap<char, u32> = HashMap::new();
+
+    for c in text.chars() {
+        // populate the hashmap
+        // update a key, guarding against the key possibly not being set
+        let sym_freq_ref = sym_freq.entry(c).or_insert(0);
+        *sym_freq_ref += 1;
+    }
+
+    let huffman_tree = build_tree(&sym_freq);
+    let mut code = Vec::new();
+    let mut huffman_codes = HuffmanCodes::new();
+
+    {
+        let huffman_codes_ref = &mut huffman_codes;
+        build_huffman_codes(&huffman_tree, code, huffman_codes_ref);
+    }
+
+    huffman_codes
 }
