@@ -158,50 +158,41 @@ fn build_huffman_codes(
     huffman_tree: &HuffmanTree,
     code: Vec<u8>,
     huffman_codes: &mut HuffmanCodes,
-) {
+) -> Vec<u8> {
     match huffman_tree {
         // If this is a leaf node, then it contains one of the input
         // characters
         HuffmanTree::Leaf(leaf) => {
-            let code_ref = &mut (*code);
+            let cloned_code = code.clone();
+
             let huffman_code = HuffmanCode {
                 character: leaf.value,
                 frequency: leaf.freq,
                 huffman_code: code,
             };
 
-            huffman_codes.huffman_codes.push(Some(huffman_code)); //Some(huffman_code));
+            huffman_codes.huffman_codes.push(Some(huffman_code));
+            cloned_code
         }
 
         HuffmanTree::Node(node) => {
-            //let code_ref =  code;
-
-            let left_node = node.left.as_ref();
-
-            {
-                let mut_code = &mut (*code);
-                let huffman_codes_ref = &mut (*huffman_codes);
-
-				
-                // Assign 0 to left edge and recur
-				mut_code.push('0' as u8);
-                build_huffman_codes(left_node, code_ref, huffman_codes_ref);
-
-                let index = huffman_codes_ref.huffman_codes.len() - 1;
-                huffman_codes_ref.huffman_codes.remove(index);
-            }
-            let code_ref = &mut (*code);
+            let mut mut_code = code;
             let huffman_codes_ref = &mut (*huffman_codes);
 
-            // let other_code_ref = code;
+            // Assign 0 to left edge and recur
+            mut_code.push('0' as u8);
+            mut_code = build_huffman_codes(node.left.as_ref(), mut_code, huffman_codes_ref);
+            let index = huffman_codes_ref.huffman_codes.len() - 1;
+            huffman_codes_ref.huffman_codes.remove(index);
+
             // Assign 1 to right edge and recur
-            code_ref.push('1' as u8);
-            let right_node = node.right.as_ref();
-            build_huffman_codes(right_node, code_ref, huffman_codes_ref);
-            // remove the '1' that was added
+            mut_code.push('1' as u8);
+            mut_code = build_huffman_codes(node.right.as_ref(), mut_code, huffman_codes_ref);
             huffman_codes
                 .huffman_codes
                 .remove(huffman_codes.huffman_codes.len() - 1);
+
+            mut_code
         }
     }
 }
@@ -218,12 +209,11 @@ pub fn generate_codes<'a>(text: &'a str) -> HuffmanCodes {
     }
 
     let huffman_tree = build_tree(&sym_freq);
-    let mut code = Vec::new();
     let mut huffman_codes = HuffmanCodes::new();
 
     {
         let huffman_codes_ref = &mut huffman_codes;
-        build_huffman_codes(&huffman_tree, code, huffman_codes_ref);
+        build_huffman_codes(&huffman_tree, Vec::new(), huffman_codes_ref);
     }
 
     huffman_codes

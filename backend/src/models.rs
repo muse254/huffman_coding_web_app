@@ -11,7 +11,7 @@ impl HuffmanCodes {
     }
 }
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Clone)]
 pub struct HuffmanCode {
     pub character: char,
     pub frequency: u32,
