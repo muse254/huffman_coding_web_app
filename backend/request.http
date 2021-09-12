@@ -1,0 +1,7 @@
+###
+POST http://localhost:8080/compress
+Content-Type: application/json
+
+{
+	"text": "Lorem ipsum dolor sit amet consectetur adipisicing elit."
+}

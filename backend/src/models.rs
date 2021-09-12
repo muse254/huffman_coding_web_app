@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Default)]
+#[derive(Serialize, Default, Clone, Debug)]
 pub struct HuffmanCodes {
-    pub huffman_codes: Vec<Option<HuffmanCode>>,
+    pub huffman_codes: Vec<HuffmanCode>,
 }
 
 impl HuffmanCodes {
@@ -14,11 +14,11 @@ impl HuffmanCodes {
 #[derive(Serialize, Debug, Clone)]
 pub struct HuffmanCode {
     pub character: char,
-    pub frequency: u32,
-    pub huffman_code: Vec<u8>,
+    pub frequency: u16,
+    pub huffman_code: String,
 }
 
 #[derive(Deserialize, Debug)]
-pub struct TextData<'a> {
+pub struct CompressRequest<'a> {
     pub text: &'a str,
 }
