@@ -1,7 +1,7 @@
 ###
-POST http://localhost:8080/compress
+POST http://localhost:8000/compress
 Content-Type: application/json
 
 {
-	"text": "Lorem ipsum dolor sit amet consectetur adipisicing elit."
+	"text": "this is an example of a huffman tree"
 }
