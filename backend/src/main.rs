@@ -2,10 +2,11 @@
 #[macro_use]
 extern crate rocket;
 
-use backend::{
-    huffman_coding::generate_codes,
-    models::{CompressRequest, HuffmanCodes},
-};
+mod huffman;
+
+pub use crate::huffman::coding::generate_codes;
+pub use crate::huffman::models::{CompressRequest, HuffmanCodes};
+
 use rocket::config::{Config, Environment};
 use rocket::http::Method;
 use rocket::post;

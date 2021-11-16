@@ -1,34 +1,6 @@
-use crate::models::{HuffmanCode, HuffmanCodes};
+use crate::huffman::models::{HuffmanCode, HuffmanCodes, HuffmanLeaf, HuffmanNode, HuffmanTree};
 use std::cmp;
 use std::{str, u16};
-
-#[derive(PartialEq)]
-enum HuffmanTree {
-    Leaf(HuffmanLeaf),
-    Node(HuffmanNode),
-}
-
-impl HuffmanTree {
-    fn freq(&self) -> u16 {
-        match self {
-            HuffmanTree::Leaf(leaf) => leaf.freq,
-            HuffmanTree::Node(node) => node.freq,
-        }
-    }
-}
-
-#[derive(PartialEq)]
-struct HuffmanLeaf {
-    freq: u16,
-    value: char,
-}
-
-#[derive(PartialEq)]
-struct HuffmanNode {
-    freq: u16,
-    left: Box<HuffmanTree>,
-    right: Box<HuffmanTree>,
-}
 
 type TreeHeap = Vec<HuffmanTree>;
 
