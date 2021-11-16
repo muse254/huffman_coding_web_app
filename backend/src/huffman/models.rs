@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 pub struct Encoded {
     pub codes: HuffmanCodes,
     pub tree: HuffmanTree,
-    pub encoded_text: Vec<Bit>,
+    pub encoded_text: String,
 }
 
 #[derive(Debug, Serialize)]
@@ -40,19 +40,6 @@ pub struct HuffmanNode {
     pub right: Box<HuffmanTree>,
 }
 
-#[derive(PartialEq, Debug, Serialize, Deserialize, Clone, Copy)]
-#[repr(u8)]
-pub enum Bit {
-    Zero = b'0',
-    One = b'1',
-}
-
-impl Into<char> for Bit {
-    fn into(self) -> char {
-        self as u8 as char
-    }
-}
-
 #[derive(Serialize, Deserialize, Default, Clone, Debug)]
 pub struct HuffmanCodes {
     pub huffman_codes: Vec<HuffmanCode>,
@@ -68,13 +55,12 @@ impl HuffmanCodes {
 pub struct HuffmanCode {
     pub character: char,
     pub frequency: u16,
-    pub huffman_code: Vec<Bit>,
+    pub huffman_code: String,
 }
 
 #[derive(Deserialize, Debug)]
-pub enum CompressRequest {
-    Text(String),
-    File, // TODO
+pub struct CompressRequest<'a> {
+    pub text: &'a str,
 }
 
 #[derive(Deserialize, Debug)]

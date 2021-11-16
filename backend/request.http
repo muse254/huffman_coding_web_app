@@ -3,5 +3,220 @@ POST http://localhost:8000/compress
 Content-Type: application/json
 
 {
-	"text": "this is an example of a huffman tree"
+	"text": "At vero eos et accusamus et."
+}
+
+###
+POST http://localhost:8000/decompress
+Content-Type:  application/json
+
+{
+  "codes": {
+    "huffman_codes": [
+      {
+        "character": " ",
+        "frequency": 5,
+        "huffman_code": "111"
+      },
+      {
+        "character": ".",
+        "frequency": 1,
+        "huffman_code": "11011"
+      },
+      {
+        "character": "A",
+        "frequency": 1,
+        "huffman_code": "0001"
+      },
+      {
+        "character": "a",
+        "frequency": 2,
+        "huffman_code": "0111"
+      },
+      {
+        "character": "c",
+        "frequency": 2,
+        "huffman_code": "1011"
+      },
+      {
+        "character": "e",
+        "frequency": 4,
+        "huffman_code": "100"
+      },
+      {
+        "character": "m",
+        "frequency": 1,
+        "huffman_code": "11010"
+      },
+      {
+        "character": "o",
+        "frequency": 2,
+        "huffman_code": "1100"
+      },
+      {
+        "character": "r",
+        "frequency": 1,
+        "huffman_code": "0110"
+      },
+      {
+        "character": "s",
+        "frequency": 3,
+        "huffman_code": "010"
+      },
+      {
+        "character": "t",
+        "frequency": 3,
+        "huffman_code": "001"
+      },
+      {
+        "character": "u",
+        "frequency": 2,
+        "huffman_code": "1010"
+      },
+      {
+        "character": "v",
+        "frequency": 1,
+        "huffman_code": "0000"
+      }
+    ]
+  },
+  "tree": {
+    "Node": {
+      "freq": 28,
+      "left": {
+        "Node": {
+          "freq": 11,
+          "left": {
+            "Node": {
+              "freq": 5,
+              "left": {
+                "Node": {
+                  "freq": 2,
+                  "left": {
+                    "Leaf": {
+                      "freq": 1,
+                      "value": "v"
+                    }
+                  },
+                  "right": {
+                    "Leaf": {
+                      "freq": 1,
+                      "value": "A"
+                    }
+                  }
+                }
+              },
+              "right": {
+                "Leaf": {
+                  "freq": 3,
+                  "value": "t"
+                }
+              }
+            }
+          },
+          "right": {
+            "Node": {
+              "freq": 6,
+              "left": {
+                "Leaf": {
+                  "freq": 3,
+                  "value": "s"
+                }
+              },
+              "right": {
+                "Node": {
+                  "freq": 3,
+                  "left": {
+                    "Leaf": {
+                      "freq": 1,
+                      "value": "r"
+                    }
+                  },
+                  "right": {
+                    "Leaf": {
+                      "freq": 2,
+                      "value": "a"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "right": {
+        "Node": {
+          "freq": 17,
+          "left": {
+            "Node": {
+              "freq": 8,
+              "left": {
+                "Leaf": {
+                  "freq": 4,
+                  "value": "e"
+                }
+              },
+              "right": {
+                "Node": {
+                  "freq": 4,
+                  "left": {
+                    "Leaf": {
+                      "freq": 2,
+                      "value": "u"
+                    }
+                  },
+                  "right": {
+                    "Leaf": {
+                      "freq": 2,
+                      "value": "c"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "right": {
+            "Node": {
+              "freq": 9,
+              "left": {
+                "Node": {
+                  "freq": 4,
+                  "left": {
+                    "Leaf": {
+                      "freq": 2,
+                      "value": "o"
+                    }
+                  },
+                  "right": {
+                    "Node": {
+                      "freq": 2,
+                      "left": {
+                        "Leaf": {
+                          "freq": 1,
+                          "value": "m"
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "freq": 1,
+                          "value": "."
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "right": {
+                "Leaf": {
+                  "freq": 5,
+                  "value": " "
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "encoded_text": "000100111100001000110110011110011000101111000011110111101110111010010011111010101001011110000111011"
 }
