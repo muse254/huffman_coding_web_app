@@ -4,22 +4,22 @@ extern crate rocket;
 
 mod huffman;
 
-pub use crate::huffman::coding::generate_codes;
-pub use crate::huffman::models::{CompressRequest, HuffmanCodes};
+pub use crate::huffman::coding::compress_text;
+pub use crate::huffman::models::{CompressRequest};
 
+use huffman::models::Encoded;
 use rocket::config::{Config, Environment};
 use rocket::http::Method;
 use rocket::post;
 use rocket_contrib::json::Json;
 use rocket_cors::{AllowedOrigins, CorsOptions};
 
-#[post("/compress", format = "application/json", data = "<request>")]
-fn get_compression<'a>(request: Json<CompressRequest<'a>>) -> Json<HuffmanCodes> {
-    let text = request.0.text;
-    let huffman_codes = generate_codes(text);
-
-    Json(huffman_codes)
+#[post("/compress", format = "json", data = "<request>")]
+fn get_compression_text(request: Json<String>) -> Json<Encoded> {
+    Json(compress_text(CompressRequest::Text(request.0)))
 }
+
+// TODO: work on file uploads
 
 fn main() {
     let cors = CorsOptions::default()
@@ -40,6 +40,6 @@ fn main() {
 
     rocket::custom(cfg)
         .attach(cors.to_cors().unwrap())
-        .mount("/", routes![get_compression])
+        .mount("/", routes![get_compression_text])
         .launch();
 }

@@ -1,6 +1,7 @@
-use crate::huffman::models::{HuffmanCode, HuffmanCodes, HuffmanLeaf, HuffmanNode, HuffmanTree};
-use std::cmp;
-use std::{str, u16};
+use crate::huffman::models::{
+    Bit, CompressRequest, Encoded, HuffmanCode, HuffmanCodes, HuffmanLeaf, HuffmanNode, HuffmanTree,
+};
+use std::{cmp, u16};
 
 type TreeHeap = Vec<HuffmanTree>;
 
@@ -44,13 +45,13 @@ fn give_least_freq(heap: &mut TreeHeap) -> HuffmanTree {
     heap.remove(index_least)
 }
 
-fn build_huffman_codes(huffman_tree: &HuffmanTree, code: Vec<u8>, codes: &mut HuffmanCodes) {
+fn build_huffman_codes(huffman_tree: &HuffmanTree, code: Vec<Bit>, codes: &mut HuffmanCodes) {
     match huffman_tree {
         HuffmanTree::Leaf(leaf) => {
             codes.huffman_codes.push(HuffmanCode {
-                character: leaf.value,
+                character: leaf.value.into(),
                 frequency: leaf.freq,
-                huffman_code: str::from_utf8(&code).unwrap().to_string(),
+                huffman_code: code,
             });
         }
 
@@ -58,47 +59,57 @@ fn build_huffman_codes(huffman_tree: &HuffmanTree, code: Vec<u8>, codes: &mut Hu
             let mut mut_code = code;
 
             // Assign 0 to left edge and recur
-            mut_code.push('0' as u8);
+            mut_code.push(Bit::Zero);
             build_huffman_codes(&node.left, mut_code.clone(), codes);
             mut_code.pop();
 
             // Assign 1 to right edge and recur
-            mut_code.push('1' as u8);
+            mut_code.push(Bit::One);
             build_huffman_codes(&node.right, mut_code, codes);
         }
     }
 }
 
-pub fn generate_codes<'a>(text: &'a str) -> HuffmanCodes {
-    // build hash-map from text
-    let mut sym_freq: Vec<(char, u16)> = Vec::new();
+pub fn compress_text(compress_req: CompressRequest) -> Encoded {
+    match compress_req {
+        CompressRequest::Text(text) => {
+            // build hash-map from text
+            let mut sym_freq: Vec<(char, u16)> = Vec::new();
 
-    for c in text.chars() {
-        let mut exists = false;
+            for c in text.chars() {
+                let mut exists = false;
 
-        // if key exists update, if not add as new entry
-        for (key, value) in &mut sym_freq {
-            if *key == c {
-                *value += 1;
-                exists = true;
+                // if key exists update, if not add as new entry
+                for (key, value) in &mut sym_freq {
+                    if *key == c {
+                        *value += 1;
+                        exists = true;
+                    }
+                }
+                if !exists {
+                    sym_freq.push((c, 1))
+                }
+            }
+
+            // create a priority queue
+            quick_sort(&mut sym_freq);
+
+            // build the Huffman tree
+            let huffman_tree = build_tree(sym_freq);
+
+            // from the Huffman tree, obtain the Huffman codes
+            let mut huffman_codes = HuffmanCodes::new();
+            build_huffman_codes(&huffman_tree, Vec::new(), &mut huffman_codes);
+
+            Encoded {
+                tree: huffman_tree,
+                codes: huffman_codes,
+                encoded_text: Vec::new(),
             }
         }
-        if !exists {
-            sym_freq.push((c, 1))
-        }
+
+        CompressRequest::File => todo!(),
     }
-
-    // create a priority queue
-    quick_sort(&mut sym_freq);
-
-    // build the Huffman tree
-    let huffman_tree = build_tree(sym_freq);
-
-    // from the Huffman tree, obtain the Huffman codes
-    let mut huffman_codes = HuffmanCodes::new();
-    build_huffman_codes(&huffman_tree, Vec::new(), &mut huffman_codes);
-
-    huffman_codes
 }
 
 fn quick_sort(sym_freq: &mut [(char, u16)]) {
