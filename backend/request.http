@@ -3,5 +3,524 @@ POST http://localhost:8000/compress
 Content-Type: application/json
 
 {
-	"text": "this is an example of a huffman tree"
+	"text": "Before we go any further, we’ll need a urine sample. Glass of water, Madam. You'll be pleased to know your parents have been fully vetted, though that father is a cross to bear, isn't he? Your mother is a breath of fresh air."
+}
+
+###
+POST http://localhost:8000/decompress
+Content-Type:  application/json
+
+{
+  "codes": {
+    "huffman_codes": [
+      {
+        "character": " ",
+        "frequency": 42,
+        "huffman_code": "11"
+      },
+      {
+        "character": "'",
+        "frequency": 2,
+        "huffman_code": "0011010"
+      },
+      {
+        "character": ",",
+        "frequency": 4,
+        "huffman_code": "010101"
+      },
+      {
+        "character": ".",
+        "frequency": 3,
+        "huffman_code": "100101"
+      },
+      {
+        "character": "?",
+        "frequency": 1,
+        "huffman_code": "10011101"
+      },
+      {
+        "character": "B",
+        "frequency": 1,
+        "huffman_code": "00110000"
+      },
+      {
+        "character": "G",
+        "frequency": 1,
+        "huffman_code": "00110011"
+      },
+      {
+        "character": "M",
+        "frequency": 1,
+        "huffman_code": "00110001"
+      },
+      {
+        "character": "Y",
+        "frequency": 2,
+        "huffman_code": "1001001"
+      },
+      {
+        "character": "a",
+        "frequency": 17,
+        "huffman_code": "0010"
+      },
+      {
+        "character": "b",
+        "frequency": 4,
+        "huffman_code": "001110"
+      },
+      {
+        "character": "c",
+        "frequency": 1,
+        "huffman_code": "10011100"
+      },
+      {
+        "character": "d",
+        "frequency": 4,
+        "huffman_code": "010100"
+      },
+      {
+        "character": "e",
+        "frequency": 25,
+        "huffman_code": "101"
+      },
+      {
+        "character": "f",
+        "frequency": 7,
+        "huffman_code": "01011"
+      },
+      {
+        "character": "g",
+        "frequency": 2,
+        "huffman_code": "0011011"
+      },
+      {
+        "character": "h",
+        "frequency": 10,
+        "huffman_code": "00010"
+      },
+      {
+        "character": "i",
+        "frequency": 5,
+        "huffman_code": "000011"
+      },
+      {
+        "character": "k",
+        "frequency": 1,
+        "huffman_code": "00110010"
+      },
+      {
+        "character": "l",
+        "frequency": 9,
+        "huffman_code": "00011"
+      },
+      {
+        "character": "m",
+        "frequency": 3,
+        "huffman_code": "0000101"
+      },
+      {
+        "character": "n",
+        "frequency": 7,
+        "huffman_code": "01110"
+      },
+      {
+        "character": "o",
+        "frequency": 13,
+        "huffman_code": "1000"
+      },
+      {
+        "character": "p",
+        "frequency": 3,
+        "huffman_code": "0000100"
+      },
+      {
+        "character": "r",
+        "frequency": 15,
+        "huffman_code": "0100"
+      },
+      {
+        "character": "s",
+        "frequency": 11,
+        "huffman_code": "00000"
+      },
+      {
+        "character": "t",
+        "frequency": 14,
+        "huffman_code": "0110"
+      },
+      {
+        "character": "u",
+        "frequency": 7,
+        "huffman_code": "01111"
+      },
+      {
+        "character": "v",
+        "frequency": 2,
+        "huffman_code": "1001000"
+      },
+      {
+        "character": "w",
+        "frequency": 4,
+        "huffman_code": "001111"
+      },
+      {
+        "character": "y",
+        "frequency": 3,
+        "huffman_code": "100110"
+      },
+      {
+        "character": "’",
+        "frequency": 1,
+        "huffman_code": "1001111"
+      }
+    ]
+  },
+  "tree": {
+    "Node": {
+      "freq": 225,
+      "left": {
+        "Node": {
+          "freq": 132,
+          "left": {
+            "Node": {
+              "freq": 74,
+              "left": {
+                "Node": {
+                  "freq": 41,
+                  "left": {
+                    "Node": {
+                      "freq": 22,
+                      "left": {
+                        "Leaf": {
+                          "freq": 11,
+                          "value": "s"
+                        }
+                      },
+                      "right": {
+                        "Node": {
+                          "freq": 11,
+                          "left": {
+                            "Node": {
+                              "freq": 6,
+                              "left": {
+                                "Leaf": {
+                                  "freq": 3,
+                                  "value": "p"
+                                }
+                              },
+                              "right": {
+                                "Leaf": {
+                                  "freq": 3,
+                                  "value": "m"
+                                }
+                              }
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "freq": 5,
+                              "value": "i"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "right": {
+                    "Node": {
+                      "freq": 19,
+                      "left": {
+                        "Leaf": {
+                          "freq": 10,
+                          "value": "h"
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "freq": 9,
+                          "value": "l"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "right": {
+                "Node": {
+                  "freq": 33,
+                  "left": {
+                    "Leaf": {
+                      "freq": 17,
+                      "value": "a"
+                    }
+                  },
+                  "right": {
+                    "Node": {
+                      "freq": 16,
+                      "left": {
+                        "Node": {
+                          "freq": 8,
+                          "left": {
+                            "Node": {
+                              "freq": 4,
+                              "left": {
+                                "Node": {
+                                  "freq": 2,
+                                  "left": {
+                                    "Leaf": {
+                                      "freq": 1,
+                                      "value": "B"
+                                    }
+                                  },
+                                  "right": {
+                                    "Leaf": {
+                                      "freq": 1,
+                                      "value": "M"
+                                    }
+                                  }
+                                }
+                              },
+                              "right": {
+                                "Node": {
+                                  "freq": 2,
+                                  "left": {
+                                    "Leaf": {
+                                      "freq": 1,
+                                      "value": "k"
+                                    }
+                                  },
+                                  "right": {
+                                    "Leaf": {
+                                      "freq": 1,
+                                      "value": "G"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "right": {
+                            "Node": {
+                              "freq": 4,
+                              "left": {
+                                "Leaf": {
+                                  "freq": 2,
+                                  "value": "'"
+                                }
+                              },
+                              "right": {
+                                "Leaf": {
+                                  "freq": 2,
+                                  "value": "g"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "right": {
+                        "Node": {
+                          "freq": 8,
+                          "left": {
+                            "Leaf": {
+                              "freq": 4,
+                              "value": "b"
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "freq": 4,
+                              "value": "w"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "right": {
+            "Node": {
+              "freq": 58,
+              "left": {
+                "Node": {
+                  "freq": 30,
+                  "left": {
+                    "Leaf": {
+                      "freq": 15,
+                      "value": "r"
+                    }
+                  },
+                  "right": {
+                    "Node": {
+                      "freq": 15,
+                      "left": {
+                        "Node": {
+                          "freq": 8,
+                          "left": {
+                            "Leaf": {
+                              "freq": 4,
+                              "value": "d"
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "freq": 4,
+                              "value": ","
+                            }
+                          }
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "freq": 7,
+                          "value": "f"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "right": {
+                "Node": {
+                  "freq": 28,
+                  "left": {
+                    "Leaf": {
+                      "freq": 14,
+                      "value": "t"
+                    }
+                  },
+                  "right": {
+                    "Node": {
+                      "freq": 14,
+                      "left": {
+                        "Leaf": {
+                          "freq": 7,
+                          "value": "n"
+                        }
+                      },
+                      "right": {
+                        "Leaf": {
+                          "freq": 7,
+                          "value": "u"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "right": {
+        "Node": {
+          "freq": 93,
+          "left": {
+            "Node": {
+              "freq": 51,
+              "left": {
+                "Node": {
+                  "freq": 26,
+                  "left": {
+                    "Leaf": {
+                      "freq": 13,
+                      "value": "o"
+                    }
+                  },
+                  "right": {
+                    "Node": {
+                      "freq": 13,
+                      "left": {
+                        "Node": {
+                          "freq": 7,
+                          "left": {
+                            "Node": {
+                              "freq": 4,
+                              "left": {
+                                "Leaf": {
+                                  "freq": 2,
+                                  "value": "v"
+                                }
+                              },
+                              "right": {
+                                "Leaf": {
+                                  "freq": 2,
+                                  "value": "Y"
+                                }
+                              }
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "freq": 3,
+                              "value": "."
+                            }
+                          }
+                        }
+                      },
+                      "right": {
+                        "Node": {
+                          "freq": 6,
+                          "left": {
+                            "Leaf": {
+                              "freq": 3,
+                              "value": "y"
+                            }
+                          },
+                          "right": {
+                            "Node": {
+                              "freq": 3,
+                              "left": {
+                                "Node": {
+                                  "freq": 2,
+                                  "left": {
+                                    "Leaf": {
+                                      "freq": 1,
+                                      "value": "c"
+                                    }
+                                  },
+                                  "right": {
+                                    "Leaf": {
+                                      "freq": 1,
+                                      "value": "?"
+                                    }
+                                  }
+                                }
+                              },
+                              "right": {
+                                "Leaf": {
+                                  "freq": 1,
+                                  "value": "’"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "right": {
+                "Leaf": {
+                  "freq": 25,
+                  "value": "e"
+                }
+              }
+            }
+          },
+          "right": {
+            "Leaf": {
+              "freq": 42,
+              "value": " "
+            }
+          }
+        }
+      }
+    }
+  },
+  "encoded_text": "00110000101010111000010010111001111101110011011100011001001110100110110101101111010001100001010101000101011100111110110011110001100011110111010110101010011001011011110100000011011101011100000001000001010000100000111011001011100110011000110010000000000011100001011110011110010011010101000101011100110001001001010000100000101100101111001001100001111001101000011000111100111010111000010000011101001000000101010100110110100011001100100111010000011111110011010000111101001100001000010010010101110011000000110001000101001000101110011101011010111011010110111100011000111001101110010001010110011010101010001010111011000010100001111001101100010110110000100010011011010110010011000010101010011000011000001100101110011100010010000000000000110110100011001110101001001000101011100001100000011100011010011011000101011001110111100100110000111101001100001011000011000010101010011000011000001100101100111001001010010011000010111000010111101011010010100000000101100100000110100100101"
 }

@@ -1,34 +1,8 @@
-use crate::models::{HuffmanCode, HuffmanCodes};
-use std::cmp;
+use crate::huffman::algorithms::{binary_search, quick_sort};
+use crate::huffman::models::{
+    Encoded, HuffmanCode, HuffmanCodes, HuffmanLeaf, HuffmanNode, HuffmanTree,
+};
 use std::{str, u16};
-
-#[derive(PartialEq)]
-enum HuffmanTree {
-    Leaf(HuffmanLeaf),
-    Node(HuffmanNode),
-}
-
-impl HuffmanTree {
-    fn freq(&self) -> u16 {
-        match self {
-            HuffmanTree::Leaf(leaf) => leaf.freq,
-            HuffmanTree::Node(node) => node.freq,
-        }
-    }
-}
-
-#[derive(PartialEq)]
-struct HuffmanLeaf {
-    freq: u16,
-    value: char,
-}
-
-#[derive(PartialEq)]
-struct HuffmanNode {
-    freq: u16,
-    left: Box<HuffmanTree>,
-    right: Box<HuffmanTree>,
-}
 
 type TreeHeap = Vec<HuffmanTree>;
 
@@ -54,8 +28,8 @@ fn build_node(heap: &mut TreeHeap) {
     // put into new node and re-insert into queue
     let node = HuffmanNode {
         freq: a.freq() + b.freq(),
-        left: Box::new(a),
-        right: Box::new(b),
+        left: Box::new(b),
+        right: Box::new(a),
     };
 
     heap.push(HuffmanTree::Node(node));
@@ -64,7 +38,7 @@ fn build_node(heap: &mut TreeHeap) {
 fn give_least_freq(heap: &mut TreeHeap) -> HuffmanTree {
     let mut index_least = 0;
     for (index, huffman_tree) in heap.iter().enumerate() {
-        if index != 0 && huffman_tree.freq() < heap[index_least].freq() {
+        if index != 0 && huffman_tree.freq() <= heap[index_least].freq() {
             index_least = index
         }
     }
@@ -76,9 +50,9 @@ fn build_huffman_codes(huffman_tree: &HuffmanTree, code: Vec<u8>, codes: &mut Hu
     match huffman_tree {
         HuffmanTree::Leaf(leaf) => {
             codes.huffman_codes.push(HuffmanCode {
-                character: leaf.value,
+                character: leaf.value.into(),
                 frequency: leaf.freq,
-                huffman_code: str::from_utf8(&code).unwrap().to_string(),
+                huffman_code: String::from_utf8(code).unwrap(),
             });
         }
 
@@ -97,7 +71,7 @@ fn build_huffman_codes(huffman_tree: &HuffmanTree, code: Vec<u8>, codes: &mut Hu
     }
 }
 
-pub fn generate_codes<'a>(text: &'a str) -> HuffmanCodes {
+pub fn compress_text<'a>(text: &'a str) -> Encoded {
     // build hash-map from text
     let mut sym_freq: Vec<(char, u16)> = Vec::new();
 
@@ -117,7 +91,7 @@ pub fn generate_codes<'a>(text: &'a str) -> HuffmanCodes {
     }
 
     // create a priority queue
-    quick_sort(&mut sym_freq);
+    quick_sort(&mut sym_freq, &|x, y| x.1.cmp(&y.1));
 
     // build the Huffman tree
     let huffman_tree = build_tree(sym_freq);
@@ -126,55 +100,30 @@ pub fn generate_codes<'a>(text: &'a str) -> HuffmanCodes {
     let mut huffman_codes = HuffmanCodes::new();
     build_huffman_codes(&huffman_tree, Vec::new(), &mut huffman_codes);
 
-    huffman_codes
+    // sort the huffman codes according to their char value in ascending order
+    quick_sort(&mut huffman_codes.huffman_codes, &|x, y| {
+        y.character.cmp(&x.character)
+    });
+
+    let encoded_text = generate_encoded_text(&huffman_codes, text);
+
+    Encoded {
+        tree: huffman_tree,
+        codes: huffman_codes,
+        encoded_text: encoded_text,
+    }
 }
 
-fn quick_sort(sym_freq: &mut [(char, u16)]) {
-    let len = sym_freq.len();
-    if len <= 1 {
-        return;
+fn generate_encoded_text<'a>(codes: &HuffmanCodes, text: &'a str) -> String {
+    let mut encoded_text = String::new();
+    for c in text.chars() {
+        let index =
+            binary_search(&codes.huffman_codes, c, &|codes, c| codes.character.cmp(&c)).unwrap();
+
+        // update the encoded text
+        let target = codes.huffman_codes.get(index).unwrap();
+        encoded_text.push_str(&target.huffman_code);
     }
 
-    let pivot = 0;
-    sym_freq.swap(pivot, len / 2);
-
-    let mut left = 1;
-    let mut right = sym_freq.len() - 1;
-
-    loop {
-        while left < len && {
-            let (_, val1) = &sym_freq[left];
-            let (_, val2) = &sym_freq[pivot];
-            val1 > val2
-        } {
-            left += 1
-        }
-        while right > 0 && {
-            let (_, val1) = &sym_freq[right];
-            let (_, val2) = &sym_freq[pivot];
-            val1 < val2
-        } {
-            right -= 1
-        }
-        if left >= right {
-            break;
-        }
-
-        sym_freq.swap(left, right);
-        left += 1;
-        right -= 1;
-    }
-
-    sym_freq.swap(pivot, right);
-    quick_sort(&mut sym_freq[0..cmp::min(left - 1, right)]);
-    quick_sort(&mut sym_freq[cmp::max(left, right + 1)..]);
-}
-
-#[test]
-fn quick_sort_test() {
-    let mut vec_to_sort = vec![('1', 54), ('1', 65), ('1', 3), ('1', 68)];
-    let vec_to_expect = vec![('1', 68), ('1', 65), ('1', 54), ('1', 3)];
-
-    quick_sort(&mut vec_to_sort);
-    assert_eq!(vec_to_sort, vec_to_expect);
+    encoded_text
 }
