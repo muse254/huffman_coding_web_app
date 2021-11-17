@@ -25,8 +25,6 @@ fn decode_text(request: Json<Encoded>) -> Json<Decoded> {
     Json(decompress_text(request.0))
 }
 
-// TODO: work on file uploads
-
 fn main() {
     let cors = CorsOptions::default()
         .allowed_origins(AllowedOrigins::all())
