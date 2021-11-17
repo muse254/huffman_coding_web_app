@@ -9,19 +9,17 @@ pub fn decompress_text(encoding: Encoded) -> Decoded {
 }
 
 pub fn reconstruct_text(tree: &HuffmanTree, encoded_text: &[u8]) -> String {
-    let mut decoded_text = Vec::new();
+    let mut decoded_text = String::new();
     let mut offset = 0;
-    loop {
-        let (value, new_offset) = next_char_from_tree(tree, offset, encoded_text);
+
+    while offset < encoded_text.len() {
+        let (value, next_char_offset) = next_char_from_tree(&tree, offset, &encoded_text);
+        offset = next_char_offset;
 
         decoded_text.push(value);
-        if new_offset == encoded_text.len() - 1 {
-            break;
-        }
-        offset = new_offset;
     }
 
-    String::from_iter(decoded_text)
+    decoded_text
 }
 
 pub fn next_char_from_tree(
@@ -30,7 +28,7 @@ pub fn next_char_from_tree(
     encoded_text: &[u8],
 ) -> (char, usize) {
     match tree {
-        HuffmanTree::Leaf(leaf) => (leaf.value, offset + 1),
+        HuffmanTree::Leaf(leaf) => (leaf.value, offset),
 
         HuffmanTree::Node(node) => {
             match *encoded_text.get(offset).unwrap() as char {
