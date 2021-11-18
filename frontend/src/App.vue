@@ -26,11 +26,11 @@ export default {
 
   methods: {
     setOutput(payload) {
+      console.log(payload);
       this.compressed_data = payload;
     },
   },
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

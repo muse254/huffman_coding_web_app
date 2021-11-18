@@ -4,7 +4,7 @@ extern crate rocket;
 
 mod huffman;
 
-pub use crate::huffman::coding::compress_text;
+pub use crate::huffman::encoding::compress_text;
 pub use crate::huffman::decoding::decompress_text;
 pub use crate::huffman::models::CompressRequest;
 

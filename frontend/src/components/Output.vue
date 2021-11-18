@@ -6,7 +6,7 @@
         <th>Frequency</th>
         <th>Huffman Code</th>
       </tr>
-      <tr v-for="code in codes.huffman_codes" :key="code.character">
+      <tr v-for="code in codes.codes.huffman_codes" :key="code.character">
         <td>{{ code.character }}</td>
         <td>{{ code.frequency }}</td>
         <td>{{ code.huffman_code }}</td>
@@ -20,9 +20,7 @@ export default {
   name: "Output",
 
   props: {
-    codes: {
-      type: Object,
-    },
+    codes: { type: Object },
   },
 };
 </script>

@@ -9,7 +9,9 @@
 
       <br />
       <textarea required v-model="text" rows="4" cols="50">
-		Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio, fuga! Minima aperiam distinctio enim et excepturi laborum, mollitia cupiditate, error, iusto neque blanditiis. Unde magnam libero quod ipsum eveniet ex.
+		Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+    Odio, fuga! Minima aperiam distinctio enim et excepturi laborum, mollitia cupiditate, error, iusto neque blanditiis. 
+    Unde magnam libero quod ipsum eveniet ex.
 	</textarea
       >
 
@@ -25,9 +27,7 @@ export default {
   name: "Input",
 
   data() {
-    return {
-      text: "",
-    };
+    return { text: "" };
   },
 
   methods: {
