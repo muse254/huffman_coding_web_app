@@ -1,8 +1,5 @@
 <template>
   <div>
-    <div id="logo">
-      <img src="../assets/logo.png" />
-    </div>
     <form @submit.prevent="compressText">
       <!--text to compress -->
       <label for="text">Text to compress:</label>
@@ -51,7 +48,7 @@ export default {
             const error = (data && data.message) || response.status;
             return Promise.reject(error);
           }
-          
+
           // emit event
           this.$emit("compressed-data", data);
         })
@@ -72,16 +69,5 @@ form {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-}
-
-#logo {
-  width: 100%;
-  text-align: center;
-  padding: 20px;
-}
-
-#logo img {
-  width: 150px;
-  height: 150px;
 }
 </style>
