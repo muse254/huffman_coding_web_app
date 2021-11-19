@@ -8,7 +8,7 @@
     <!-- visualize the huffman tree -->
     <div id="tree">
       <h1>Huffman Tree</h1>
-      <p><i>A left edge encode value is 0, 1 for a right branch.</i></p>
+      <p><i>A left edge encode value is 0 else 1 for a right branch.</i></p>
       <div>
         <blocks-tree
           :data="treeData"
@@ -26,7 +26,7 @@
         <th>Huffman Code</th>
       </tr>
       <tr v-for="code in codes.codes.huffman_codes" :key="code.character">
-        <td>{{ code.character }}</td>
+        <td>'{{ code.character }}'</td>
         <td>{{ code.frequency }}</td>
         <td>{{ code.huffman_code }}</td>
       </tr>
@@ -35,8 +35,6 @@
 </template>
 
 <script>
-import { ref, reactive } from "vue";
-
 export default {
   name: "Output",
 
@@ -44,17 +42,14 @@ export default {
     codes: { type: Object },
   },
 
-  setup(props) {
-    let selected = ref([]);
-    let treeOrientation = ref("0");
-
-    function generate_tree(tree, id) {
+  methods: {
+    generate_tree: function (tree, id) {
       if (Object.prototype.hasOwnProperty.call(tree, "Node")) {
         let node = tree.Node;
         // left
-        let left = generate_tree(node.left, id + 1);
+        let left = this.generate_tree(node.left, id + 1);
         // right
-        let right = generate_tree(node.right, id + 2);
+        let right = this.generate_tree(node.right, id + 2);
 
         return {
           label: node.freq,
@@ -63,30 +58,15 @@ export default {
           children: [left, right],
         };
       }
-
       let leaf = tree.Leaf;
       return { label: `${leaf.freq}, '${leaf.value}'`, some_id: id };
-    }
+    },
+  },
 
-    let treeData = reactive(generate_tree(props.codes.tree));
-
-    const toggleSelect = (node, isSelected) => {
-      isSelected
-        ? selected.value.push(node.some_id)
-        : selected.value.splice(selected.value.indexOf(node.some_id), 1);
-      if (node.children && node.children.length) {
-        node.children.forEach((ch) => {
-          toggleSelect(ch, isSelected);
-        });
-      }
-    };
-
-    return {
-      treeData,
-      selected,
-      toggleSelect,
-      treeOrientation,
-    };
+  computed: {
+    treeData() {
+      return this.generate_tree(this.codes.tree);
+    },
   },
 };
 </script>
