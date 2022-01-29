@@ -6,184 +6,203 @@ Content-Type: application/json
 	"text": "Before we go any further, we’ll need a urine sample. Glass of water, Madam. You'll be pleased to know your parents have been fully vetted, though that father is a cross to bear, isn't he? Your mother is a breath of fresh air."
 }
 
+### Checing for single node
+POST http://localhost:8000/compress
+Content-Type: application/json
+
+{
+  "text": "dddddd"
+}
+
 ###
 POST http://localhost:8000/decompress
 Content-Type:  application/json
 
 {
+  "name": null,
   "codes": {
     "huffman_codes": [
       {
-        "character": " ",
+        "character": 32,
         "frequency": 42,
         "huffman_code": "11"
       },
       {
-        "character": "'",
+        "character": 39,
         "frequency": 2,
-        "huffman_code": "0011010"
+        "huffman_code": "0011111"
       },
       {
-        "character": ",",
+        "character": 44,
         "frequency": 4,
-        "huffman_code": "010101"
+        "huffman_code": "010011"
       },
       {
-        "character": ".",
-        "frequency": 3,
-        "huffman_code": "100101"
-      },
-      {
-        "character": "?",
-        "frequency": 1,
-        "huffman_code": "10011101"
-      },
-      {
-        "character": "B",
-        "frequency": 1,
-        "huffman_code": "00110000"
-      },
-      {
-        "character": "G",
-        "frequency": 1,
-        "huffman_code": "00110011"
-      },
-      {
-        "character": "M",
-        "frequency": 1,
-        "huffman_code": "00110001"
-      },
-      {
-        "character": "Y",
-        "frequency": 2,
-        "huffman_code": "1001001"
-      },
-      {
-        "character": "a",
-        "frequency": 17,
-        "huffman_code": "0010"
-      },
-      {
-        "character": "b",
-        "frequency": 4,
-        "huffman_code": "001110"
-      },
-      {
-        "character": "c",
-        "frequency": 1,
-        "huffman_code": "10011100"
-      },
-      {
-        "character": "d",
-        "frequency": 4,
-        "huffman_code": "010100"
-      },
-      {
-        "character": "e",
-        "frequency": 25,
-        "huffman_code": "101"
-      },
-      {
-        "character": "f",
-        "frequency": 7,
-        "huffman_code": "01011"
-      },
-      {
-        "character": "g",
-        "frequency": 2,
-        "huffman_code": "0011011"
-      },
-      {
-        "character": "h",
-        "frequency": 10,
-        "huffman_code": "00010"
-      },
-      {
-        "character": "i",
-        "frequency": 5,
-        "huffman_code": "000011"
-      },
-      {
-        "character": "k",
-        "frequency": 1,
-        "huffman_code": "00110010"
-      },
-      {
-        "character": "l",
-        "frequency": 9,
-        "huffman_code": "00011"
-      },
-      {
-        "character": "m",
+        "character": 46,
         "frequency": 3,
         "huffman_code": "0000101"
       },
       {
-        "character": "n",
+        "character": 63,
+        "frequency": 1,
+        "huffman_code": "00110001"
+      },
+      {
+        "character": 66,
+        "frequency": 1,
+        "huffman_code": "01000101"
+      },
+      {
+        "character": 71,
+        "frequency": 1,
+        "huffman_code": "00111011"
+      },
+      {
+        "character": 77,
+        "frequency": 1,
+        "huffman_code": "00111010"
+      },
+      {
+        "character": 89,
+        "frequency": 2,
+        "huffman_code": "0011100"
+      },
+      {
+        "character": 97,
+        "frequency": 17,
+        "huffman_code": "0010"
+      },
+      {
+        "character": 98,
+        "frequency": 4,
+        "huffman_code": "010010"
+      },
+      {
+        "character": 99,
+        "frequency": 1,
+        "huffman_code": "001100001"
+      },
+      {
+        "character": 100,
+        "frequency": 4,
+        "huffman_code": "001101"
+      },
+      {
+        "character": 101,
+        "frequency": 25,
+        "huffman_code": "101"
+      },
+      {
+        "character": 102,
         "frequency": 7,
         "huffman_code": "01110"
       },
       {
-        "character": "o",
+        "character": 103,
+        "frequency": 2,
+        "huffman_code": "0011110"
+      },
+      {
+        "character": 104,
+        "frequency": 10,
+        "huffman_code": "00010"
+      },
+      {
+        "character": 105,
+        "frequency": 5,
+        "huffman_code": "000011"
+      },
+      {
+        "character": 107,
+        "frequency": 1,
+        "huffman_code": "001100000"
+      },
+      {
+        "character": 108,
+        "frequency": 9,
+        "huffman_code": "00011"
+      },
+      {
+        "character": 109,
+        "frequency": 3,
+        "huffman_code": "100111"
+      },
+      {
+        "character": 110,
+        "frequency": 7,
+        "huffman_code": "10010"
+      },
+      {
+        "character": 111,
         "frequency": 13,
         "huffman_code": "1000"
       },
       {
-        "character": "p",
-        "frequency": 3,
-        "huffman_code": "0000100"
-      },
-      {
-        "character": "r",
-        "frequency": 15,
-        "huffman_code": "0100"
-      },
-      {
-        "character": "s",
-        "frequency": 11,
-        "huffman_code": "00000"
-      },
-      {
-        "character": "t",
-        "frequency": 14,
-        "huffman_code": "0110"
-      },
-      {
-        "character": "u",
-        "frequency": 7,
-        "huffman_code": "01111"
-      },
-      {
-        "character": "v",
-        "frequency": 2,
-        "huffman_code": "1001000"
-      },
-      {
-        "character": "w",
-        "frequency": 4,
-        "huffman_code": "001111"
-      },
-      {
-        "character": "y",
+        "character": 112,
         "frequency": 3,
         "huffman_code": "100110"
       },
       {
-        "character": "’",
+        "character": 114,
+        "frequency": 15,
+        "huffman_code": "0101"
+      },
+      {
+        "character": 115,
+        "frequency": 11,
+        "huffman_code": "00000"
+      },
+      {
+        "character": 116,
+        "frequency": 14,
+        "huffman_code": "0110"
+      },
+      {
+        "character": 117,
+        "frequency": 7,
+        "huffman_code": "01111"
+      },
+      {
+        "character": 118,
+        "frequency": 2,
+        "huffman_code": "0011001"
+      },
+      {
+        "character": 119,
+        "frequency": 4,
+        "huffman_code": "010000"
+      },
+      {
+        "character": 121,
+        "frequency": 3,
+        "huffman_code": "0000100"
+      },
+      {
+        "character": 128,
         "frequency": 1,
-        "huffman_code": "1001111"
+        "huffman_code": "01000111"
+      },
+      {
+        "character": 153,
+        "frequency": 1,
+        "huffman_code": "01000110"
+      },
+      {
+        "character": 226,
+        "frequency": 1,
+        "huffman_code": "01000100"
       }
     ]
   },
   "tree": {
     "Node": {
-      "freq": 225,
+      "freq": 227,
       "left": {
         "Node": {
-          "freq": 132,
+          "freq": 134,
           "left": {
             "Node": {
-              "freq": 74,
+              "freq": 75,
               "left": {
                 "Node": {
                   "freq": 41,
@@ -193,7 +212,7 @@ Content-Type:  application/json
                       "left": {
                         "Leaf": {
                           "freq": 11,
-                          "value": "s"
+                          "value": 115
                         }
                       },
                       "right": {
@@ -205,13 +224,13 @@ Content-Type:  application/json
                               "left": {
                                 "Leaf": {
                                   "freq": 3,
-                                  "value": "p"
+                                  "value": 121
                                 }
                               },
                               "right": {
                                 "Leaf": {
                                   "freq": 3,
-                                  "value": "m"
+                                  "value": 46
                                 }
                               }
                             }
@@ -219,7 +238,7 @@ Content-Type:  application/json
                           "right": {
                             "Leaf": {
                               "freq": 5,
-                              "value": "i"
+                              "value": 105
                             }
                           }
                         }
@@ -232,13 +251,13 @@ Content-Type:  application/json
                       "left": {
                         "Leaf": {
                           "freq": 10,
-                          "value": "h"
+                          "value": 104
                         }
                       },
                       "right": {
                         "Leaf": {
                           "freq": 9,
-                          "value": "l"
+                          "value": 108
                         }
                       }
                     }
@@ -247,73 +266,62 @@ Content-Type:  application/json
               },
               "right": {
                 "Node": {
-                  "freq": 33,
+                  "freq": 34,
                   "left": {
                     "Leaf": {
                       "freq": 17,
-                      "value": "a"
+                      "value": 97
                     }
                   },
                   "right": {
                     "Node": {
-                      "freq": 16,
+                      "freq": 17,
                       "left": {
                         "Node": {
-                          "freq": 8,
+                          "freq": 9,
                           "left": {
                             "Node": {
-                              "freq": 4,
+                              "freq": 5,
                               "left": {
                                 "Node": {
-                                  "freq": 2,
+                                  "freq": 3,
                                   "left": {
-                                    "Leaf": {
-                                      "freq": 1,
-                                      "value": "B"
+                                    "Node": {
+                                      "freq": 2,
+                                      "left": {
+                                        "Leaf": {
+                                          "freq": 1,
+                                          "value": 107
+                                        }
+                                      },
+                                      "right": {
+                                        "Leaf": {
+                                          "freq": 1,
+                                          "value": 99
+                                        }
+                                      }
                                     }
                                   },
                                   "right": {
                                     "Leaf": {
                                       "freq": 1,
-                                      "value": "M"
+                                      "value": 63
                                     }
                                   }
                                 }
                               },
                               "right": {
-                                "Node": {
+                                "Leaf": {
                                   "freq": 2,
-                                  "left": {
-                                    "Leaf": {
-                                      "freq": 1,
-                                      "value": "k"
-                                    }
-                                  },
-                                  "right": {
-                                    "Leaf": {
-                                      "freq": 1,
-                                      "value": "G"
-                                    }
-                                  }
+                                  "value": 118
                                 }
                               }
                             }
                           },
                           "right": {
-                            "Node": {
+                            "Leaf": {
                               "freq": 4,
-                              "left": {
-                                "Leaf": {
-                                  "freq": 2,
-                                  "value": "'"
-                                }
-                              },
-                              "right": {
-                                "Leaf": {
-                                  "freq": 2,
-                                  "value": "g"
-                                }
-                              }
+                              "value": 100
                             }
                           }
                         }
@@ -322,15 +330,48 @@ Content-Type:  application/json
                         "Node": {
                           "freq": 8,
                           "left": {
-                            "Leaf": {
+                            "Node": {
                               "freq": 4,
-                              "value": "b"
+                              "left": {
+                                "Leaf": {
+                                  "freq": 2,
+                                  "value": 89
+                                }
+                              },
+                              "right": {
+                                "Node": {
+                                  "freq": 2,
+                                  "left": {
+                                    "Leaf": {
+                                      "freq": 1,
+                                      "value": 77
+                                    }
+                                  },
+                                  "right": {
+                                    "Leaf": {
+                                      "freq": 1,
+                                      "value": 71
+                                    }
+                                  }
+                                }
+                              }
                             }
                           },
                           "right": {
-                            "Leaf": {
+                            "Node": {
                               "freq": 4,
-                              "value": "w"
+                              "left": {
+                                "Leaf": {
+                                  "freq": 2,
+                                  "value": 103
+                                }
+                              },
+                              "right": {
+                                "Leaf": {
+                                  "freq": 2,
+                                  "value": 39
+                                }
+                              }
                             }
                           }
                         }
@@ -343,42 +384,86 @@ Content-Type:  application/json
           },
           "right": {
             "Node": {
-              "freq": 58,
+              "freq": 59,
               "left": {
                 "Node": {
-                  "freq": 30,
+                  "freq": 31,
                   "left": {
-                    "Leaf": {
-                      "freq": 15,
-                      "value": "r"
-                    }
-                  },
-                  "right": {
                     "Node": {
-                      "freq": 15,
+                      "freq": 16,
                       "left": {
                         "Node": {
                           "freq": 8,
                           "left": {
                             "Leaf": {
                               "freq": 4,
-                              "value": "d"
+                              "value": 119
                             }
                           },
                           "right": {
-                            "Leaf": {
+                            "Node": {
                               "freq": 4,
-                              "value": ","
+                              "left": {
+                                "Node": {
+                                  "freq": 2,
+                                  "left": {
+                                    "Leaf": {
+                                      "freq": 1,
+                                      "value": 226
+                                    }
+                                  },
+                                  "right": {
+                                    "Leaf": {
+                                      "freq": 1,
+                                      "value": 66
+                                    }
+                                  }
+                                }
+                              },
+                              "right": {
+                                "Node": {
+                                  "freq": 2,
+                                  "left": {
+                                    "Leaf": {
+                                      "freq": 1,
+                                      "value": 153
+                                    }
+                                  },
+                                  "right": {
+                                    "Leaf": {
+                                      "freq": 1,
+                                      "value": 128
+                                    }
+                                  }
+                                }
+                              }
                             }
                           }
                         }
                       },
                       "right": {
-                        "Leaf": {
-                          "freq": 7,
-                          "value": "f"
+                        "Node": {
+                          "freq": 8,
+                          "left": {
+                            "Leaf": {
+                              "freq": 4,
+                              "value": 98
+                            }
+                          },
+                          "right": {
+                            "Leaf": {
+                              "freq": 4,
+                              "value": 44
+                            }
+                          }
                         }
                       }
+                    }
+                  },
+                  "right": {
+                    "Leaf": {
+                      "freq": 15,
+                      "value": 114
                     }
                   }
                 }
@@ -389,7 +474,7 @@ Content-Type:  application/json
                   "left": {
                     "Leaf": {
                       "freq": 14,
-                      "value": "t"
+                      "value": 116
                     }
                   },
                   "right": {
@@ -398,13 +483,13 @@ Content-Type:  application/json
                       "left": {
                         "Leaf": {
                           "freq": 7,
-                          "value": "n"
+                          "value": 102
                         }
                       },
                       "right": {
                         "Leaf": {
                           "freq": 7,
-                          "value": "u"
+                          "value": 117
                         }
                       }
                     }
@@ -427,38 +512,16 @@ Content-Type:  application/json
                   "left": {
                     "Leaf": {
                       "freq": 13,
-                      "value": "o"
+                      "value": 111
                     }
                   },
                   "right": {
                     "Node": {
                       "freq": 13,
                       "left": {
-                        "Node": {
+                        "Leaf": {
                           "freq": 7,
-                          "left": {
-                            "Node": {
-                              "freq": 4,
-                              "left": {
-                                "Leaf": {
-                                  "freq": 2,
-                                  "value": "v"
-                                }
-                              },
-                              "right": {
-                                "Leaf": {
-                                  "freq": 2,
-                                  "value": "Y"
-                                }
-                              }
-                            }
-                          },
-                          "right": {
-                            "Leaf": {
-                              "freq": 3,
-                              "value": "."
-                            }
-                          }
+                          "value": 110
                         }
                       },
                       "right": {
@@ -467,35 +530,13 @@ Content-Type:  application/json
                           "left": {
                             "Leaf": {
                               "freq": 3,
-                              "value": "y"
+                              "value": 112
                             }
                           },
                           "right": {
-                            "Node": {
+                            "Leaf": {
                               "freq": 3,
-                              "left": {
-                                "Node": {
-                                  "freq": 2,
-                                  "left": {
-                                    "Leaf": {
-                                      "freq": 1,
-                                      "value": "c"
-                                    }
-                                  },
-                                  "right": {
-                                    "Leaf": {
-                                      "freq": 1,
-                                      "value": "?"
-                                    }
-                                  }
-                                }
-                              },
-                              "right": {
-                                "Leaf": {
-                                  "freq": 1,
-                                  "value": "’"
-                                }
-                              }
+                              "value": 109
                             }
                           }
                         }
@@ -507,7 +548,7 @@ Content-Type:  application/json
               "right": {
                 "Leaf": {
                   "freq": 25,
-                  "value": "e"
+                  "value": 101
                 }
               }
             }
@@ -515,12 +556,12 @@ Content-Type:  application/json
           "right": {
             "Leaf": {
               "freq": 42,
-              "value": " "
+              "value": 32
             }
           }
         }
       }
     }
   },
-  "encoded_text": "00110000101010111000010010111001111101110011011100011001001110100110110101101111010001100001010101000101011100111110110011110001100011110111010110101010011001011011110100000011011101011100000001000001010000100000111011001011100110011000110010000000000011100001011110011110010011010101000101011100110001001001010000100000101100101111001001100001111001101000011000111100111010111000010000011101001000000101010100110110100011001100100111010000011111110011010000111101001100001000010010010101110011000000110001000101001000101110011101011010111011010110111100011000111001101110010001010110011010101010001010111011000010100001111001101100010110110000100010011011010110010011000010101010011000011000001100101110011100010010000000000000110110100011001110101001001000101011100001100000011100011010011011000101011001110111100100110000111101001100001011000011000010101010011000011000001100101100111001001010010011000010111000010111101011010010100000000101100100000110100100101"
+  "encoded_text": "010001011010111010000101101110100001011100111101000110010100100000100110111001111010101100001010101010100111101000010101000100010001110100011000011000111110010101101001101110010110111101010000111001010111000000010100111100110000111010000101110011101100011001000000000001110000111011010000001001101010101010011110011101000100011010010100111000010111001110010000111100111110001100011110100101011110011000011101001000000101001101110110100011001100000100101000010000110000100100001111010111100110001001011011001001100000011000100010001100110111010010101101100101101110011110001100011000010011001100110101100110101001101010011110110000101000011110011110000101101100001000100110110111000100110000101010101110000110000011001011001100001010110000000000000110110100011010010101001001010100111100001100000100100011111011011000101010011000111001110010000111101011110011110000110000101010101110000110000011001011010010010110100100110000101110000111011011100101101000000001011001000001101010000101"
 }

@@ -1,59 +1,86 @@
-#![feature(proc_macro_hygiene, decl_macro)]
-#[macro_use]
-extern crate rocket;
+use axum::{
+    extract,
+    extract::{ContentLengthLimit, Multipart},
+    http::StatusCode,
+    response::IntoResponse,
+    routing::post,
+    Json, Router,
+};
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
 mod huffman;
+pub use crate::huffman::{
+    decoding::decompress,
+    encoding::compress,
+    models::{AppError, CompressRequest, Encoded},
+};
 
-pub use crate::huffman::decoding::decompress;
-pub use crate::huffman::encoding::compress;
-pub use crate::huffman::models::CompressRequest;
+const UPLOAD_LIMIT: u64 = 10 * 1_000_000; // 10MB; 1MB = 1_000_000 Bytes
+static FORM_FIELD_NAME: &str = "txt_file";
 
-use huffman::models::{Decoded, Encoded, TextFile};
-use rocket::config::{Config, Environment};
-use rocket::http::Method;
-use rocket::post;
-use rocket_contrib::json::Json;
-use rocket_cors::{AllowedOrigins, CorsOptions};
+#[tokio::main]
+async fn main() {
+    tracing_subscriber::fmt::init();
 
-#[post("/compress", format = "json", data = "<request>")]
-fn encode_text<'a>(request: Json<CompressRequest<'a>>) -> Json<Encoded> {
-    let text_file = TextFile {
-        file: Vec::from(request.0.text),
-        alpha: "".to_string(),
-    };
+    let app = Router::new()
+        .route("/compress", post(compress_text))
+        .route("/compress_file", post(compress_file))
+        // This handler is used to carry out decompression. The orignal text is churned out as
+        // an array of utf-8 bytes.
+        .route(
+            "/decompress",
+            post(|extract::Json(payload): extract::Json<Encoded>| async {
+                (StatusCode::OK, Json(decompress(payload))).into_response()
+            }),
+        );
 
-    Json(compress(text_file))
+    // create and run the server
+    axum::Server::bind(&SocketAddr::new(
+        IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
+        8000,
+    ))
+    .serve(app.into_make_service())
+    .await
+    .unwrap();
 }
 
-#[post("/compress_file", data = "<upload>")]
-fn encode_file<'a>(upload: TextFile) -> Json<Encoded> {
-    Json(compress(upload))
+/// This is the handler for the /compress endpoint.
+/// It handles the text input parsing for compression.
+async fn compress_text(
+    extract::Json(payload): extract::Json<CompressRequest>,
+) -> Result<impl IntoResponse, AppError> {
+    // Send the text data for encoding.
+    // And return the encoded data.
+    Ok((
+        StatusCode::OK,
+        Json(compress(payload.text.as_bytes(), None)),
+    ))
 }
 
-#[post("/decompress", format = "json", data = "<request>")]
-fn decode_text(request: Json<Encoded>) -> Json<Decoded> {
-    Json(decompress(request.0))
-}
+/// This is the handler for the /compress_file endpoint.
+/// It handles the file input parsing for compression.
+async fn compress_file(
+    ContentLengthLimit(mut payload): ContentLengthLimit<Multipart, UPLOAD_LIMIT>,
+) -> Result<impl IntoResponse, AppError> {
+    // Extract the form field with data.
+    let field = payload.next_field().await.unwrap().unwrap();
 
-fn main() {
-    let cors = CorsOptions::default()
-        .allowed_origins(AllowedOrigins::all())
-        .allowed_methods(
-            vec![Method::Get, Method::Post, Method::Patch]
-                .into_iter()
-                .map(From::from)
-                .collect(),
-        )
-        .allow_credentials(true);
+    if FORM_FIELD_NAME.eq(field.name().unwrap()) {
+        // Fetch the filename first.
+        let filename = match field.file_name() {
+            Some(filename) => Some(filename.to_string()),
+            None => None,
+        };
 
-    let port = 8000;
-    let cfg = Config::build(Environment::Development)
-        .address("127.0.0.1")
-        .port(port)
-        .unwrap();
+        // Send the file contents for encoding.
+        let data = compress(&field.bytes().await.unwrap(), filename);
 
-    rocket::custom(cfg)
-        .attach(cors.to_cors().unwrap())
-        .mount("/", routes![encode_text, decode_text])
-        .launch();
+        // Return the encoded data as response.
+        Ok((StatusCode::OK, Json(data)).into_response())
+    } else {
+        Err(AppError::InternalServerError(format!(
+            "File expected is of form field name, '{}'",
+            FORM_FIELD_NAME
+        )))
+    }
 }

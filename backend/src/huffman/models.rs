@@ -1,14 +1,10 @@
-use multipart::server::Multipart;
-use rocket::{
-    data::{Data, FromData, Outcome, Transform, Transformed},
-    Request,
-};
+//! This module containing all the models used in the decoding and decoding processes.
+use axum::{http::StatusCode, response::IntoResponse, Json};
 use serde::{Deserialize, Serialize};
-use std::io::Read;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Encoded {
-    pub name: String,
+    pub name: Option<String>,
     pub codes: HuffmanCodes,
     pub tree: HuffmanTree,
     pub encoded_text: String,
@@ -16,7 +12,7 @@ pub struct Encoded {
 
 #[derive(Debug, Serialize)]
 pub struct Decoded {
-    pub name: String,
+    pub name: Option<String>,
     pub text: Vec<u8>,
 }
 
@@ -31,6 +27,31 @@ impl HuffmanTree {
         match self {
             HuffmanTree::Leaf(leaf) => leaf.freq,
             HuffmanTree::Node(node) => node.freq,
+        }
+    }
+}
+
+impl HuffmanTree {
+    /// This checks whether the tree contains only a single node(leaf).
+    pub fn is_single_node(&self) -> bool {
+        match self {
+            HuffmanTree::Leaf(_) => true,
+            HuffmanTree::Node(_) => false,
+        }
+    }
+
+    /// This retrieves the value of the single node in the tree.
+    pub fn get_single_node_value(&self) -> u8 {
+        match self {
+            HuffmanTree::Node(_) => panic!("This is not a single node tree"),
+            HuffmanTree::Leaf(leaf) => leaf.value,
+        }
+    }
+
+    pub fn get_single_node_frequency(&self) -> u16 {
+        match self {
+            HuffmanTree::Node(_) => panic!("This is not a single node tree"),
+            HuffmanTree::Leaf(leaf) => leaf.freq,
         }
     }
 }
@@ -67,8 +88,8 @@ pub struct HuffmanCode {
 }
 
 #[derive(Deserialize, Debug)]
-pub struct CompressRequest<'a> {
-    pub text: &'a str,
+pub struct CompressRequest {
+    pub text: String,
 }
 
 #[derive(Deserialize, Debug)]
@@ -76,64 +97,33 @@ pub struct CompressResponse {
     pub code: Vec<u8>,
 }
 
-#[derive(Debug)]
-pub struct TextFile {
-    pub alpha: String,
-    pub file: Vec<u8>,
+/// AppError allows to wrap errors and return as responses to a server request.
+#[derive(Debug, Serialize)]
+pub enum AppError {
+    /// BadRequest is used when the request body's request cannot be parsed.
+    BadRequest(String),
+    /// InternalServerError is returned when there's an issue while processing
+    /// the client request.
+    InternalServerError(String),
+    /// NotFound is returned when the resource requested for by the client request
+    /// was not found.
+    NotFound(String),
 }
 
-impl<'a> FromData<'a> for TextFile {
-    type Owned = Vec<u8>;
-    type Borrowed = [u8];
-    type Error = ();
-
-    fn transform(_request: &Request, data: Data) -> Transform<Outcome<Self::Owned, Self::Error>> {
-        let mut d = Vec::new();
-        data.stream_to(&mut d).expect("Unable to read");
-
-        Transform::Owned(Outcome::Success(d))
-    }
-
-    fn from_data(request: &Request, outcome: Transformed<'a, Self>) -> Outcome<Self, Self::Error> {
-        let d = outcome.owned()?;
-
-        let ct = request
-            .headers()
-            .get_one("Content-Type")
-            .expect("no content-type");
-        let idx = ct.find("boundary=").expect("no boundary");
-        let boundary = &ct[(idx + "boundary=".len())..];
-
-        let mut mp = Multipart::with_body(&d[..], boundary);
-
-        // Custom implementation parts
-        let mut alpha = None;
-
-        let mut file = None;
-
-        mp.foreach_entry(|mut entry| match &*entry.headers.name {
-            "alpha" => {
-                let mut t = String::new();
-                entry.data.read_to_string(&mut t).expect("not text");
-                alpha = Some(t);
-            }
-            "one" => {}
-            "file" => {
-                let mut d = Vec::new();
-                entry.data.read_to_end(&mut d).expect("not file");
-                file = Some(d);
-            }
-            other => panic!("No known key {}", other),
-        })
-        .expect("Unable to iterate");
-
-        let v = TextFile {
-            alpha: alpha.expect("alpha not set"),
-
-            file: file.expect("file not set"),
+/// IntoResponse trait is implemented for AppError in order to be able
+/// to return AppError as a server response type for client requests.
+impl IntoResponse for AppError {
+    fn into_response(self) -> axum::response::Response {
+        let (status, err_message) = match self {
+            AppError::BadRequest(message) => (StatusCode::BAD_REQUEST, message),
+            AppError::InternalServerError(message) => (StatusCode::INTERNAL_SERVER_ERROR, message),
+            AppError::NotFound(message) => (StatusCode::NOT_FOUND, message),
         };
 
-        // End custom
-        Outcome::Success(v)
+        let body = Json(serde_json::json! ({
+            "error": err_message,
+        }));
+
+        (status, body).into_response()
     }
 }

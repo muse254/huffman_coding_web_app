@@ -2,7 +2,7 @@
 
 use crate::huffman::algorithms::{binary_search, quick_sort};
 use crate::huffman::models::{
-    Encoded, HuffmanCode, HuffmanCodes, HuffmanLeaf, HuffmanNode, HuffmanTree, TextFile,
+    Encoded, HuffmanCode, HuffmanCodes, HuffmanLeaf, HuffmanNode, HuffmanTree,
 };
 use std::u16;
 
@@ -53,6 +53,7 @@ fn give_least_freq(heap: &mut TreeHeap) -> HuffmanTree {
 
 /// Builds the Huffman codes for the given tree.
 fn build_huffman_codes(huffman_tree: &HuffmanTree, code: Vec<u8>, codes: &mut HuffmanCodes) {
+    // if is single node, then code is 0
     match huffman_tree {
         HuffmanTree::Leaf(leaf) => {
             codes.huffman_codes.push(HuffmanCode {
@@ -98,9 +99,9 @@ fn update_occurences(data_set: &[u8]) -> Vec<(u8, u16)> {
 }
 
 /// Encodes the text provided to a Huffman Tree and Huffman Codes.
-pub fn compress<'a>(text: TextFile) -> Encoded {
+pub fn compress<'a>(text_data: &[u8], filename: Option<String>) -> Encoded {
     // build hash-map from text
-    let mut sym_freq: Vec<(u8, u16)> = update_occurences(&text.file);
+    let mut sym_freq: Vec<(u8, u16)> = update_occurences(&text_data);
 
     // create a priority queue
     quick_sort(&mut sym_freq, &|x, y| x.1.cmp(&y.1));
@@ -110,17 +111,27 @@ pub fn compress<'a>(text: TextFile) -> Encoded {
 
     // from the Huffman tree, obtain the Huffman codes
     let mut huffman_codes = HuffmanCodes::new();
-    build_huffman_codes(&huffman_tree, Vec::new(), &mut huffman_codes);
+
+    // if the tree is a single node, then code is 0
+    if huffman_tree.is_single_node() {
+        huffman_codes.huffman_codes.push(HuffmanCode {
+            character: huffman_tree.get_single_node_value(),
+            frequency: huffman_tree.get_single_node_frequency(),
+            huffman_code: String::from("0"),
+        });
+    } else {
+        build_huffman_codes(&huffman_tree, Vec::new(), &mut huffman_codes);
+    }
 
     // sort the huffman codes according to their char value in ascending order
     quick_sort(&mut huffman_codes.huffman_codes, &|x, y| {
         y.character.cmp(&x.character)
     });
 
-    let encoded_text = generate_encoded_text(&huffman_codes, &text.file);
+    let encoded_text = generate_encoded_text(&huffman_codes, &text_data);
 
     Encoded {
-        name: text.alpha,
+        name: filename,
         tree: huffman_tree,
         codes: huffman_codes,
         encoded_text: encoded_text,
