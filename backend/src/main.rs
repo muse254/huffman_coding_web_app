@@ -4,11 +4,11 @@ extern crate rocket;
 
 mod huffman;
 
-pub use crate::huffman::encoding::compress_text;
-pub use crate::huffman::decoding::decompress_text;
+pub use crate::huffman::decoding::decompress;
+pub use crate::huffman::encoding::compress;
 pub use crate::huffman::models::CompressRequest;
 
-use huffman::models::{Decoded, Encoded};
+use huffman::models::{Decoded, Encoded, TextFile};
 use rocket::config::{Config, Environment};
 use rocket::http::Method;
 use rocket::post;
@@ -17,12 +17,22 @@ use rocket_cors::{AllowedOrigins, CorsOptions};
 
 #[post("/compress", format = "json", data = "<request>")]
 fn encode_text<'a>(request: Json<CompressRequest<'a>>) -> Json<Encoded> {
-    Json(compress_text(request.0.text))
+    let text_file = TextFile {
+        file: Vec::from(request.0.text),
+        alpha: "".to_string(),
+    };
+
+    Json(compress(text_file))
+}
+
+#[post("/compress_file", data = "<upload>")]
+fn encode_file<'a>(upload: TextFile) -> Json<Encoded> {
+    Json(compress(upload))
 }
 
 #[post("/decompress", format = "json", data = "<request>")]
 fn decode_text(request: Json<Encoded>) -> Json<Decoded> {
-    Json(decompress_text(request.0))
+    Json(decompress(request.0))
 }
 
 fn main() {
