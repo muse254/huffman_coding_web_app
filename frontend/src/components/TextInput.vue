@@ -32,7 +32,6 @@ export default {
       // send data to server
       const request_options = {
         method: "POST",
-        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text: this.text,
@@ -45,7 +44,8 @@ export default {
 
           if (!response.ok) {
             // get error message from body or default to response status
-            const error = (data && data.message) || response.status;
+            const error =
+              data.error | (data && data.message) || response.status;
             return Promise.reject(error);
           }
 

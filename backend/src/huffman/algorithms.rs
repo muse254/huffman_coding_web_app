@@ -1,10 +1,11 @@
 use math::round;
 use std::{cmp, cmp::Ordering};
 
-pub fn binary_search<T, C, F>(sorted_items: &[T], target: C, cmp: &F) -> Option<usize>
-where
-    F: Fn(&T, &C) -> Ordering,
-{
+pub fn binary_search<T, C, F: Fn(&T, &C) -> Ordering>(
+    sorted_items: &[T],
+    target: C,
+    cmp: &F,
+) -> Option<usize> {
     let mut l = 0;
     let mut r = sorted_items.len() - 1;
 
@@ -42,10 +43,7 @@ fn binary_search_test() {
     assert_eq!(desc_res, Some(4));
 }
 
-pub fn quick_sort<T, F>(items: &mut [T], cmp: &F)
-where
-    F: Fn(&T, &T) -> Ordering,
-{
+pub fn quick_sort<T, F: Fn(&T, &T) -> Ordering>(items: &mut [T], cmp: &F) {
     let len = items.len();
     if len <= 1 {
         return;

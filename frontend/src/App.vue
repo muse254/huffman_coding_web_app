@@ -4,7 +4,10 @@
       <img src="./assets/logo.png" />
     </div>
 
-    <Input @compressed-data="setOutput" />
+    <!-- <InputToggle /> -->
+    <div>
+      <TextInput @compressed-data="setOutput" />
+    </div>
 
     <div v-if="compressed_data">
       <Output :codes="compressed_data" />
@@ -13,15 +16,15 @@
 </template>
 
 <script>
-import Input from "./components/Input.vue";
 import Output from "./components/Output.vue";
+import TextInput from "./components/TextInput.vue";
 
 export default {
   name: "App",
 
   components: {
-    Input,
     Output,
+    TextInput,
   },
 
   data() {
@@ -46,5 +49,10 @@ export default {
 #logo img {
   width: 150px;
   height: 150px;
+}
+
+#nav {
+  display: flex;
+  justify-content: center;
 }
 </style>

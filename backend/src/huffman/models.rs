@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Encoded {
-    pub name: Option<String>,
     pub codes: HuffmanCodes,
     pub tree: HuffmanTree,
     pub encoded_text: String,
@@ -12,10 +11,13 @@ pub struct Encoded {
 
 #[derive(Debug, Serialize)]
 pub struct Decoded {
-    pub name: Option<String>,
-    pub text: Vec<u8>,
+    pub text: String,
 }
 
+/// The HuffmanTree contains the Huffman Tree structure.
+///
+/// The HuffmanTree is a binary tree that contains the Huffman Codes.
+/// The HuffmanTree is either a leaf or a node.
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum HuffmanTree {
     Leaf(HuffmanLeaf),
@@ -23,15 +25,14 @@ pub enum HuffmanTree {
 }
 
 impl HuffmanTree {
-    pub fn freq(&self) -> u16 {
+    /// This returns the frequency of the tree.
+    pub fn freq(&self) -> u64 {
         match self {
             HuffmanTree::Leaf(leaf) => leaf.freq,
             HuffmanTree::Node(node) => node.freq,
         }
     }
-}
 
-impl HuffmanTree {
     /// This checks whether the tree contains only a single node(leaf).
     pub fn is_single_node(&self) -> bool {
         match self {
@@ -41,14 +42,18 @@ impl HuffmanTree {
     }
 
     /// This retrieves the value of the single node in the tree.
-    pub fn get_single_node_value(&self) -> u8 {
+    pub fn get_single_node_value(&self) -> char {
         match self {
             HuffmanTree::Node(_) => panic!("This is not a single node tree"),
             HuffmanTree::Leaf(leaf) => leaf.value,
         }
     }
 
-    pub fn get_single_node_frequency(&self) -> u16 {
+    /// This retrieves the frequency value of the single node in the tree.
+    ///
+    /// This method is redundant with the `freq` method but it asserts that
+    /// the tree is a single node tree.
+    pub fn get_single_node_frequency(&self) -> u64 {
         match self {
             HuffmanTree::Node(_) => panic!("This is not a single node tree"),
             HuffmanTree::Leaf(leaf) => leaf.freq,
@@ -56,19 +61,30 @@ impl HuffmanTree {
     }
 }
 
+/// The HuffamnLeaf contains the Huffman Leaf structure.
+///
+/// The `freq` field is the frequency of the leaf.
+/// The `value` field is the value of the leaf.
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 pub struct HuffmanLeaf {
-    pub freq: u16,
-    pub value: u8,
+    pub freq: u64,
+    pub value: char,
 }
 
+/// The HuffmanNode contains the Huffman Node structure.
+///
+/// The `left` and `right` fields are the left and right children of the node.
+/// The `freq` field is the frequency of the node.
 #[derive(PartialEq, Debug, Serialize, Deserialize)]
 pub struct HuffmanNode {
-    pub freq: u16,
+    pub freq: u64,
     pub left: Box<HuffmanTree>,
     pub right: Box<HuffmanTree>,
 }
 
+/// The HuffmanCodes contains the Huffman Codes collection.
+///
+/// The `huffman_codes` field is the collection of Huffman Codes.
 #[derive(Serialize, Deserialize, Default, Clone, Debug)]
 pub struct HuffmanCodes {
     pub huffman_codes: Vec<HuffmanCode>,
@@ -82,8 +98,8 @@ impl HuffmanCodes {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct HuffmanCode {
-    pub character: u8,
-    pub frequency: u16,
+    pub character: char,
+    pub frequency: u64,
     pub huffman_code: String,
 }
 

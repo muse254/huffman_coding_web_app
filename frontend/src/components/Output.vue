@@ -1,13 +1,26 @@
 <template>
   <div>
-    <!-- show the encoded text -->
-    <p id="text">
-      Encoded text: <strong>{{ codes.encoded_text }}</strong>
-    </p>
+    <h1>HUFFMAN CODING</h1>
+    <!-- provide the frequency distribution -->
+    <div>
+      <h2>Distribution Table</h2>
+      <table>
+        <tr>
+          <th>Character</th>
+          <th>Frequency</th>
+          <th>Huffman Code</th>
+        </tr>
+        <tr v-for="code in codes.codes.huffman_codes" :key="code.character">
+          <td>'{{ code.character }}'</td>
+          <td>{{ code.frequency }}</td>
+          <td>{{ code.huffman_code }}</td>
+        </tr>
+      </table>
+    </div>
 
     <!-- visualize the huffman tree -->
     <div id="tree">
-      <h1>Huffman Tree</h1>
+      <h2>Huffman Tree</h2>
       <p><i>A left edge encode value is 0 else 1 for a right branch.</i></p>
       <div>
         <blocks-tree
@@ -18,19 +31,37 @@
       </div>
     </div>
 
-    <!-- provide the frequency distribution -->
-    <table>
-      <tr>
-        <th>Character</th>
-        <th>Frequency</th>
-        <th>Huffman Code</th>
-      </tr>
-      <tr v-for="code in codes.codes.huffman_codes" :key="code.character">
-        <td>'{{ code.character }}'</td>
-        <td>{{ code.frequency }}</td>
-        <td>{{ code.huffman_code }}</td>
-      </tr>
-    </table>
+    <p>
+      The Huffman Code is: <strong>{{ codes.encoded_text }}</strong>
+    </p>
+
+    <h1>HUFFMAN DECODING</h1>
+
+    <p>
+      The Huffman Tree can be decoded recursively using the encoded text to
+      reconstruct the original text. We traverse the tree such that if we
+      encounter a 0, we move an edge to the left & to the right if 1 was
+      encountered.
+    </p>
+    <p>
+      If we encounter a leaf, we print out the symbol it holds to output. We
+      move back to the root of the Huffman Tree and decode again starting from
+      the current offset. Doing this recursively decodes the compressed encoded
+      text.
+    </p>
+
+    <div id="button">
+      <button v-on:click="decode_text">
+        Decode The Huffman Codes with Huffman Tree
+      </button>
+    </div>
+
+    <div v-if="decoded_text">
+      <h2>Decoded Text</h2>
+      <p>
+        <strong>{{ decoded_text }}</strong>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -42,8 +73,12 @@ export default {
     codes: { type: Object },
   },
 
+  data() {
+    return { decoded_text: "" };
+  },
+
   methods: {
-    generate_tree: function (tree, id) {
+    generate_tree: function(tree, id) {
       if (Object.prototype.hasOwnProperty.call(tree, "Node")) {
         let node = tree.Node;
         // left
@@ -60,6 +95,34 @@ export default {
       }
       let leaf = tree.Leaf;
       return { label: `${leaf.freq}, '${leaf.value}'`, some_id: id };
+    },
+
+    decode_text() {
+      console.log(this.codes);
+      // send data to server
+      const request_options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(this.codes),
+      };
+
+      fetch("http://localhost:8000/decompress", request_options)
+        .then(async (response) => {
+          const data = await response.json();
+
+          if (!response.ok) {
+            // get error message from body or default to response status
+            const error =
+              data.error | (data && data.message) || response.status;
+            return Promise.reject(error);
+          }
+
+          this.decoded_text = data.text;
+        })
+        .catch((error) => {
+          console.error("There was an error!", error);
+          alert(`${error}`);
+        });
     },
   },
 
@@ -107,10 +170,18 @@ th {
   border-right: none;
 }
 
+#button,
 #tree,
-h1 {
+#download,
+h1,
+p,
+h2 {
   width: 100%;
   text-align: center;
+}
+
+#download {
+  margin-top: 50px;
 }
 
 #text {

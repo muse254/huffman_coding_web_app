@@ -4,12 +4,11 @@ use crate::huffman::algorithms::{binary_search, quick_sort};
 use crate::huffman::models::{
     Encoded, HuffmanCode, HuffmanCodes, HuffmanLeaf, HuffmanNode, HuffmanTree,
 };
-use std::u16;
 
 type TreeHeap = Vec<HuffmanTree>;
 
 /// This function encodes the given chracter frequency map to a Huffman Tree.
-fn build_tree(sym_freq: Vec<(u8, u16)>) -> HuffmanTree {
+fn build_tree(sym_freq: Vec<(char, u64)>) -> HuffmanTree {
     let mut trees = TreeHeap::new();
     for (c, f) in sym_freq {
         trees.push(HuffmanTree::Leaf(HuffmanLeaf { freq: f, value: c }));
@@ -57,7 +56,7 @@ fn build_huffman_codes(huffman_tree: &HuffmanTree, code: Vec<u8>, codes: &mut Hu
     match huffman_tree {
         HuffmanTree::Leaf(leaf) => {
             codes.huffman_codes.push(HuffmanCode {
-                character: leaf.value,
+                character: leaf.value as char,
                 frequency: leaf.freq,
                 huffman_code: String::from_utf8(code).unwrap(),
             });
@@ -67,41 +66,41 @@ fn build_huffman_codes(huffman_tree: &HuffmanTree, code: Vec<u8>, codes: &mut Hu
             let mut mut_code = code;
 
             // Assign 0 to left edge and recur
-            mut_code.push('0' as u8);
+            mut_code.push(b'0');
             build_huffman_codes(&node.left, mut_code.clone(), codes);
             mut_code.pop();
 
             // Assign 1 to right edge and recur
-            mut_code.push('1' as u8);
+            mut_code.push(b'1');
             build_huffman_codes(&node.right, mut_code, codes);
         }
     }
 }
 
 /// Populates the sym_freq vector with the character frequency of each character in the data set.
-fn update_occurences(data_set: &[u8]) -> Vec<(u8, u16)> {
-    let mut sym_freq: Vec<(u8, u16)> = Vec::new();
-    for c in data_set {
+fn update_occurences(data_set: &[u8]) -> Vec<(char, u64)> {
+    let mut sym_freq: Vec<(char, u64)> = Vec::new();
+    for &c in data_set {
         let mut exists = false;
 
         // if key exists update, if not add as new entry
         for (key, value) in &mut sym_freq {
-            if *key == *c {
+            if *key == c as char {
                 *value += 1;
                 exists = true;
             }
         }
         if !exists {
-            sym_freq.push((c.clone(), 1))
+            sym_freq.push((c as char, 1))
         }
     }
     sym_freq
 }
 
 /// Encodes the text provided to a Huffman Tree and Huffman Codes.
-pub fn compress<'a>(text_data: &[u8], filename: Option<String>) -> Encoded {
+pub fn compress(text_data: Vec<u8>) -> Encoded {
     // build hash-map from text
-    let mut sym_freq: Vec<(u8, u16)> = update_occurences(&text_data);
+    let mut sym_freq = update_occurences(&text_data);
 
     // create a priority queue
     quick_sort(&mut sym_freq, &|x, y| x.1.cmp(&y.1));
@@ -115,7 +114,7 @@ pub fn compress<'a>(text_data: &[u8], filename: Option<String>) -> Encoded {
     // if the tree is a single node, then code is 0
     if huffman_tree.is_single_node() {
         huffman_codes.huffman_codes.push(HuffmanCode {
-            character: huffman_tree.get_single_node_value(),
+            character: huffman_tree.get_single_node_value() as char,
             frequency: huffman_tree.get_single_node_frequency(),
             huffman_code: String::from("0"),
         });
@@ -131,7 +130,6 @@ pub fn compress<'a>(text_data: &[u8], filename: Option<String>) -> Encoded {
     let encoded_text = generate_encoded_text(&huffman_codes, &text_data);
 
     Encoded {
-        name: filename,
         tree: huffman_tree,
         codes: huffman_codes,
         encoded_text: encoded_text,
@@ -141,12 +139,15 @@ pub fn compress<'a>(text_data: &[u8], filename: Option<String>) -> Encoded {
 /// Generates the encoded text from the given Huffman codes.
 fn generate_encoded_text<'a>(codes: &HuffmanCodes, text: &[u8]) -> String {
     let mut encoded_text = String::new();
-    for c in text {
-        let index =
-            binary_search(&codes.huffman_codes, c, &|codes, c| codes.character.cmp(&c)).unwrap();
+    for &c in text {
+        let index = binary_search(&codes.huffman_codes, c, &|codes, &c| {
+            codes.character.cmp(&(c as char))
+        })
+        .unwrap();
 
         // update the encoded text
         let target = codes.huffman_codes.get(index).unwrap();
+
         encoded_text.push_str(&target.huffman_code);
     }
 

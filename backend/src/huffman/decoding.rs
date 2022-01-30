@@ -2,9 +2,18 @@ use crate::huffman::models::{Decoded, Encoded};
 
 use super::models::HuffmanTree;
 
-/// This function decodes the given encoded text to utf-8 text.
 pub fn decompress(encoding: Encoded) -> Decoded {
-    let mut decoded_text = Vec::new();
+    // check whether the tree only has one node.
+    if encoding.tree.is_single_node() {
+        // if so repeat the char `freq` number of times
+        return Decoded {
+            text: std::iter::repeat(encoding.tree.get_single_node_value())
+                .take(encoding.tree.get_single_node_frequency() as usize)
+                .collect::<String>(),
+        };
+    }
+
+    let mut decoded_text = String::new();
     let mut offset = 0;
 
     let encoded_text = encoding.encoded_text.as_bytes();
@@ -15,14 +24,14 @@ pub fn decompress(encoding: Encoded) -> Decoded {
         decoded_text.push(value);
     }
 
-    Decoded {
-        name: encoding.name,
-        text: decoded_text,
-    }
+    Decoded { text: decoded_text }
 }
 
-/// Returns the next character from the tree and the offset of the next character.
-pub fn next_char_from_tree(tree: &HuffmanTree, offset: usize, encoded_text: &[u8]) -> (u8, usize) {
+pub fn next_char_from_tree(
+    tree: &HuffmanTree,
+    offset: usize,
+    encoded_text: &[u8],
+) -> (char, usize) {
     match tree {
         HuffmanTree::Leaf(leaf) => (leaf.value, offset),
 
@@ -34,9 +43,9 @@ pub fn next_char_from_tree(tree: &HuffmanTree, offset: usize, encoded_text: &[u8
                 // '0' is assigned to left edge, check left edge of tree
                 '0' => next_char_from_tree(&(*node.left), offset + 1, encoded_text),
 
-                // this case is never called
+                // this case is never called, here just to make the compiler happy  😆
                 _ => {
-                    unimplemented!();
+                    unimplemented!()
                 }
             }
         }
