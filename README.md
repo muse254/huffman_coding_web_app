@@ -48,9 +48,9 @@ The simple make command should do it.
 make
 ```
 
-> The local tcp port 8080 is hardcoded for the server, this build fails if the port is taken by another program.
+> The local tcp port 8000 is hardcoded for the server, this build fails if the port is taken by another program.
 
-Once the project is setup, you can navigate to the designated port path. If tcp port **8000** is free, it's the default .
+Once the project is setup, you can navigate to the designated port path. If tcp port **8080** is free, it's the default .
 
 The terminal output will have information similar to this:
 ```
