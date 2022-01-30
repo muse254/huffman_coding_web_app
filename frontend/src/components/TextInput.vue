@@ -53,7 +53,7 @@ export default {
           this.$emit("compressed-data", data);
         })
         .catch((error) => {
-          console.error("There was an error!", error);
+          console.log("There was an error!", error);
           alert(`${error}`);
         });
     },

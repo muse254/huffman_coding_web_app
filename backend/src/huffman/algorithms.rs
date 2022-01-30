@@ -1,6 +1,12 @@
+//! This module provides the common algorithms that will be used in the cencoding and decoding
+//! phases of the program.
+//!
+//! The algorithms are also backed with tests.
 use math::round;
 use std::{cmp, cmp::Ordering};
 
+/// This is a binary search implementation that is generic and order agnostic.
+/// The list type and sorted list order is up to the caller to specify.
 pub fn binary_search<T, C, F: Fn(&T, &C) -> Ordering>(
     sorted_items: &[T],
     target: C,
@@ -43,6 +49,8 @@ fn binary_search_test() {
     assert_eq!(desc_res, Some(4));
 }
 
+/// This is a quicksort algorithm that is type generic and order agnostic.
+/// The list type and sorting order is up to the caller to specify.
 pub fn quick_sort<T, F: Fn(&T, &T) -> Ordering>(items: &mut [T], cmp: &F) {
     let len = items.len();
     if len <= 1 {

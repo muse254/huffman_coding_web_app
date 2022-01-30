@@ -6,7 +6,7 @@ mod huffman;
 pub use crate::huffman::{
     decoding::decompress,
     encoding::compress,
-    models::{AppError, CompressRequest, Encoded},
+    models::{CompressRequest, Encoded},
 };
 use http::{header, HeaderValue};
 use tower::ServiceBuilder;
@@ -18,8 +18,6 @@ use tower_http::{
 
 #[tokio::main]
 async fn main() {
-    tracing_subscriber::fmt::init();
-
     let cors = CorsLayer::new()
         .allow_methods(any())
         .allow_origin(any())
@@ -64,6 +62,8 @@ async fn main() {
                 (StatusCode::OK, Json(decompress(payload))).into_response()
             }),
         )
+        // This applies the CORS middleware that is necessary to be able to interact with the
+        // API on the client-side.
         .layer(cors_middleware);
 
     // create and run the server

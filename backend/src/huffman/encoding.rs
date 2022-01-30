@@ -1,5 +1,4 @@
-//! This module handles all encoding of the Huffman Coding algorithm.
-
+//! This module handles all encoding  of the Huffman Coding algorithm.
 use crate::huffman::algorithms::{binary_search, quick_sort};
 use crate::huffman::models::{
     Encoded, HuffmanCode, HuffmanCodes, HuffmanLeaf, HuffmanNode, HuffmanTree,

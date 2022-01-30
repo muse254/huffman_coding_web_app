@@ -1,7 +1,8 @@
 //! This module containing all the models used in the decoding and decoding processes.
-use axum::{http::StatusCode, response::IntoResponse, Json};
 use serde::{Deserialize, Serialize};
 
+/// Encoded represent the Encode form of the text provided from input for
+/// compression. It's what the API returns on successful encoding.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Encoded {
     pub codes: HuffmanCodes,
@@ -9,6 +10,8 @@ pub struct Encoded {
     pub encoded_text: String,
 }
 
+/// Decoded wraps the text that is as a result of the decoding operation.
+/// It's what the API returns on successful decoding.
 #[derive(Debug, Serialize)]
 pub struct Decoded {
     pub text: String,
@@ -96,6 +99,8 @@ impl HuffmanCodes {
     }
 }
 
+/// HuffmanCode wraps the character specofic information after successfully encoding
+/// text provided from input.
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct HuffmanCode {
     pub character: char,
@@ -103,43 +108,15 @@ pub struct HuffmanCode {
     pub huffman_code: String,
 }
 
+/// This wraps the text from tha API input that has been sent for compression.
 #[derive(Deserialize, Debug)]
 pub struct CompressRequest {
     pub text: String,
 }
 
+/// This wraps the compression response from the encoding module for the text provided
+/// for compression from input.
 #[derive(Deserialize, Debug)]
 pub struct CompressResponse {
     pub code: Vec<u8>,
-}
-
-/// AppError allows to wrap errors and return as responses to a server request.
-#[derive(Debug, Serialize)]
-pub enum AppError {
-    /// BadRequest is used when the request body's request cannot be parsed.
-    BadRequest(String),
-    /// InternalServerError is returned when there's an issue while processing
-    /// the client request.
-    InternalServerError(String),
-    /// NotFound is returned when the resource requested for by the client request
-    /// was not found.
-    NotFound(String),
-}
-
-/// IntoResponse trait is implemented for AppError in order to be able
-/// to return AppError as a server response type for client requests.
-impl IntoResponse for AppError {
-    fn into_response(self) -> axum::response::Response {
-        let (status, err_message) = match self {
-            AppError::BadRequest(message) => (StatusCode::BAD_REQUEST, message),
-            AppError::InternalServerError(message) => (StatusCode::INTERNAL_SERVER_ERROR, message),
-            AppError::NotFound(message) => (StatusCode::NOT_FOUND, message),
-        };
-
-        let body = Json(serde_json::json! ({
-            "error": err_message,
-        }));
-
-        (status, body).into_response()
-    }
 }

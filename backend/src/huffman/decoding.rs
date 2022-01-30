@@ -1,7 +1,10 @@
+//! This module deals with the decoding
+use super::models::HuffmanTree;
 use crate::huffman::models::{Decoded, Encoded};
 
-use super::models::HuffmanTree;
-
+/// This allows for decompression of the [`Encoded`] type to the [`Decoded`] type
+/// where Encoded holds the [`HuffmanTree`] and the [`HuffmanCodes`] that
+/// are necessary for the decoding process.
 pub fn decompress(encoding: Encoded) -> Decoded {
     // check whether the tree only has one node.
     if encoding.tree.is_single_node() {
@@ -27,11 +30,8 @@ pub fn decompress(encoding: Encoded) -> Decoded {
     Decoded { text: decoded_text }
 }
 
-pub fn next_char_from_tree(
-    tree: &HuffmanTree,
-    offset: usize,
-    encoded_text: &[u8],
-) -> (char, usize) {
+/// This allows to traverse the [`HuffmanTree`] recursively using the endoded_text from the specified offset.
+fn next_char_from_tree(tree: &HuffmanTree, offset: usize, encoded_text: &[u8]) -> (char, usize) {
     match tree {
         HuffmanTree::Leaf(leaf) => (leaf.value, offset),
 

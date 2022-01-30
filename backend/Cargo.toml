@@ -7,9 +7,7 @@ authors = ["Osoro <fanosoro@gmail.com>"]
 [dependencies]
 libmath = "0.2.1"
 serde = { version = "1.0.130", features = ["derive"] }
-serde_json = "1.0.67"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-tracing = "0.1"
+serde_json = "1.0.67" 
 axum = { version = "0.4.2", features = ["multipart"] }
 hyper = { version = "0.14.16", features = ["full"] }
 tokio = { version = "1.15.0", features = ["full"] }
